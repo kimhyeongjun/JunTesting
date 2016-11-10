@@ -20,16 +20,14 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
-@EnableWebMvc
-@ComponentScan("com.thymeleafexamples")
-public class ThymeleafConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+public class ThymeleafConfig implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext = null;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		logger.info("thmeleaf start");
+		logger.info("========== THYMELEAF SETTING START ==========");
 		this.applicationContext = applicationContext;
 	}
 

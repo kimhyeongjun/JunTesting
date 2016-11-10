@@ -31,4 +31,8 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
 		return super.preHandle(request, response, handler);
 	}
 
+	public LoggerInterceptor() {
+		log.info("=========== LOGGERINTERCEPTOR ==========");
+	}
+
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 5.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-5.0.dtd">
+<hibernate-mapping>
+    <class name="com.pro.jun.utill.Emp" table="EMP">
+        <id name="empno" type="int">
+            <column name="EMPNO" precision="5" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="ename" type="string">
+            <column name="ENAME" length="20" not-null="true" />
+        </property>
+        <property name="job" type="string">
+            <column name="JOB" length="20" not-null="true" />
+        </property>
+        <property name="hiredate" type="date">
+            <column name="HIREDATE" length="7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
