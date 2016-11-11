@@ -1,7 +1,6 @@
 package com.pro.jun.config;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,48 +9,51 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
 public class HibernateConfig {
 
-	@Autowired
-	ApplicationContext applicationContext;
-
-	private Log log = LogFactory.getLog(this.getClass());
 	private @Value("${db.url}") String url;
 	private @Value("${db.username}") String userName;
 	private @Value("${db.pw}") String pw;
 	private @Value("${db.drivername}") String driverName;
+	
+	@Autowired
+	ApplicationContext applicationContext;
 
-	@Bean(destroyMethod = "close")
-	public OracleDataSource dataSource() {
-		OracleDataSource dataSource = null;
-		try {
-			dataSource = new OracleDataSource();
-			dataSource.setURL(url);
-			dataSource.setUser(userName);
-			dataSource.setPassword(pw);
-			dataSource.setDataSourceName("ds");
+	@Autowired
+	// DriverManagerDataSource dataSource;
+	OracleDataSource dataSource;
 
-			log.info("[ ORACLE DATABASE CONNECT ]");
-		} catch (SQLException e) {
-			log.error("DATABASE CONNECT FEILED" + e.getMessage());
-			e.printStackTrace();
-		}
+	private Log log = LogFactory.getLog(this.getClass());
 
-		return dataSource;
+	@Bean
+	public PersistenceExceptionTranslationPostProcessor persistenceExceptionTanslationPostProcessor() {
+		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory(OracleDataSource dataSource, ApplicationContext applicationContext) throws IOException {
+	public PlatformTransactionManager transactionManager() throws Throwable {
+		HibernateTransactionManager txMgr = new HibernateTransactionManager();
+		txMgr.setSessionFactory(sessionFactory().getObject());
+		return txMgr;
+	}
+
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() throws IOException {
+		log.info("[ DB.url ] = " + url);
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource);
 		localSessionFactoryBean.setMappingResources("/com/pro/jun/hibernate/hibernate.hbm.xml");
 		java.util.Properties prop = new java.util.Properties();
-		prop.setProperty("hibernate", "org.hibernate.dialect.OracleDialect");
+		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
 		localSessionFactoryBean.setHibernateProperties(prop);
 		return localSessionFactoryBean;
 	}
