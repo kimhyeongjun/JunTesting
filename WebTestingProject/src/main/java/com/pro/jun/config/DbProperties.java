@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Properties {
+public class DbProperties {
 
 	private @Value("${db.url}") String url;
 	private @Value("${db.username}") String userName;

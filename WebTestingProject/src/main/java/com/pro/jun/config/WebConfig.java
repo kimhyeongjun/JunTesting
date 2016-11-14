@@ -24,10 +24,6 @@ import oracle.jdbc.pool.OracleDataSource;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 	private Log log = LogFactory.getLog(this.getClass());
-	private @Value("${db.url}") String url;
-	private @Value("${db.username}") String userName;
-	private @Value("${db.pw}") String pw;
-	private @Value("${db.drivername}") String driverName;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -50,24 +46,24 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public Properties properties() {
-		return new Properties();
+	public DbProperties properties() {
+		return new DbProperties();
 	}
 
 	@Bean /* (destroyMethod = "close") */
-	public OracleDataSource dataSource() throws SQLException {
-		log.info("[ DB URL ] = " + properties().getUrl() + url);
+	public OracleDataSource dataSource(DbProperties properties) throws SQLException {
+		log.info("[ DB URL ] = " + properties.getUrl());
 		/* DriverManagerDataSource dataSource = null; dataSource = new DriverManagerDataSource();
 		 * dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
 		 * dataSource.setDriverClassName("oracle.jdbc.OracleDriver"); dataSource.setUsername("SCOTT");
 		 * dataSource.setPassword("1234"); */
 
 		OracleDataSource dataSource = new OracleDataSource();
-		dataSource.setURL(url);
-		dataSource.setUser(userName);
-		dataSource.setPassword(pw);
+		dataSource.setURL(properties.getUrl());
+		dataSource.setUser(properties.getUserName());
+		dataSource.setPassword(properties.getPw());
 		dataSource.setDataSourceName("ds");
-		dataSource.setDriverType(driverName);
+		dataSource.setDriverType(properties.getDriverName());
 
 		log.info("[ ORACLE DATABASE CONNECT ]");
 
