@@ -3,6 +3,27 @@
 	layout:decorate="~{../templates/layout}">
 <head>
 <meta charset="UTF-8">
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+function ajaxGo() {
+	var serData = $("form[name=ajaxForm]").serialize();
+	alert(serData);
+	jQuery.ajax({
+		type : "POST",
+		url : "ajax",
+		data : {"prgCd" : "12"},
+		datatype : "json",
+		success : function(obj) {
+			alert(obj);
+		},
+		complete : function(data) {// 응답이 종료되면 실행, 잘 사용하지않는다
+		},
+		error : function(xhr, status, error) {
+			alert("ERROR!!!");
+		}
+	});
+}
+</script>
 <title>THYMELEAF TEST</title>
 </head>
 <body>
@@ -23,6 +44,10 @@
 				<td th:text="${rt.hiredate}"></td>
 			</tr>
 		</table>
+		<form name="ajaxForm">
+			<input type="hidden" value="12" name="prgCd">
+		</form>
+		<button type="button" onclick="ajaxGo()">AJAX</button>
 	</section>
 </body>
 </html>

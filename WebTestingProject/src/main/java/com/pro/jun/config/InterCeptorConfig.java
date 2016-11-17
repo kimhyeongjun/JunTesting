@@ -21,7 +21,7 @@ public class InterCeptorConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		// TODO Auto-generated method stub
 		log.info("========== INTERCEPTOR CONNECT ==========");
-		// registry.addInterceptor(new LocaleChangeInterceptor());
+		registry.addInterceptor(new LocaleChangeInterceptor());
 		registry.addInterceptor(loggerInterceptor()).addPathPatterns("/**");
 	}
 

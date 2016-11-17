@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.pro.jun.utill.Emp;
 
-@Repository
+// @Repository
 public class HibernateDao {
 
 	@Autowired

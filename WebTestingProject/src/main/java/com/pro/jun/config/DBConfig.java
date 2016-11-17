@@ -16,36 +16,13 @@ import org.springframework.context.annotation.Configuration;
 
 import oracle.jdbc.pool.OracleDataSource;
 
-//@Configuration
+@Configuration
 public class DBConfig {
 
 	@Autowired
 	ApplicationContext applicationContext;
 
 	private Log log = LogFactory.getLog(this.getClass());
-	private @Value("${db.url}") String url;
-	private @Value("${db.username}") String userName;
-	private @Value("${db.pw}") String pw;
-	private @Value("${db.drivername}") String driverName;
-
-	@Bean(destroyMethod = "close")
-	public OracleDataSource dataSource() {
-		OracleDataSource dataSource = null;
-		try {
-			dataSource = new OracleDataSource();
-			dataSource.setURL(url);
-			dataSource.setUser(userName);
-			dataSource.setPassword(pw);
-			dataSource.setDataSourceName("ds");
-
-			log.info("[ ORACLE DATABASE CONNECT ]");
-		} catch (SQLException e) {
-			log.error("DATABASE CONNECT FEILED" + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return dataSource;
-	}
 
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactoryBean(OracleDataSource dataSource, ApplicationContext applicationContext) {
@@ -59,7 +36,7 @@ public class DBConfig {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			log.error("sqlSessionFactory ERROR" + e.getMessage());
+			log.error("sqlSessionFactory ERROR", e);
 			return null;
 		}
 

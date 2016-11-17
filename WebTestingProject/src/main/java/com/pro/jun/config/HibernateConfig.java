@@ -17,19 +17,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import oracle.jdbc.pool.OracleDataSource;
 
-@Configuration
+// @Configuration
 public class HibernateConfig {
 
-	private @Value("${db.url}") String url;
-	private @Value("${db.username}") String userName;
-	private @Value("${db.pw}") String pw;
-	private @Value("${db.drivername}") String driverName;
-	
-	@Autowired
-	ApplicationContext applicationContext;
-
-	@Autowired
-	// DriverManagerDataSource dataSource;
+/*	@Autowired
 	OracleDataSource dataSource;
 
 	private Log log = LogFactory.getLog(this.getClass());
@@ -48,7 +39,6 @@ public class HibernateConfig {
 
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() throws IOException {
-		log.info("[ DB.url ] = " + url);
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource);
 		localSessionFactoryBean.setMappingResources("/com/pro/jun/hibernate/hibernate.hbm.xml");
@@ -56,5 +46,5 @@ public class HibernateConfig {
 		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
 		localSessionFactoryBean.setHibernateProperties(prop);
 		return localSessionFactoryBean;
-	}
+	}*/
 }

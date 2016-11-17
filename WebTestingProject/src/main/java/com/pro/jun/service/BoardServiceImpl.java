@@ -13,20 +13,19 @@ import com.pro.jun.utill.Emp;
 import com.pro.jun.vo.Search;
 
 @Service
-public class BoardSerivceImpl implements BoardService {
-
-	/*@Autowired
-	private SqlSessionTemplate sql_template;*/
-	private BoardDao boardDAO = null;
+public class BoardServiceImpl implements BoardService {
 
 	@Autowired
-	private HibernateDao hibernateDAO;
+	private SqlSessionTemplate sql_template;
+	private BoardDao boardDAO = null;
+
+	/* @Autowired private HibernateDao hibernateDAO; */
 
 	public List<Emp> getEmpList() {
-		// boardDAO = sql_template.getMapper(BoardDao.class);
+		boardDAO = sql_template.getMapper(BoardDao.class);
 
-		// List<Emp> list = boardDAO.getEmpList();
-		List<Emp> list = hibernateDAO.getHibernateEmpList();
+		List<Emp> list = boardDAO.getEmpList();
+		// List<Emp> list = hibernateDAO.getHibernateEmpList();
 		if (list == null) {
 			throw new NullPointerException();
 		}
@@ -40,15 +39,15 @@ public class BoardSerivceImpl implements BoardService {
 	}
 
 	@Override
-	public String selectOne(int num) {
+	public Board selectOne(int num) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String modify(Board board) {
+	public boolean modify(Board board) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 	@Override
@@ -63,4 +62,9 @@ public class BoardSerivceImpl implements BoardService {
 		return null;
 	}
 
+	@Override
+	public boolean insert(Board board) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
