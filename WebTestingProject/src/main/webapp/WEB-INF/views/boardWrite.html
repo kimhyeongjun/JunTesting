@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{../templates/layout}">
+<head>
+<meta charset="UTF-8">
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<style type="text/css">
+th {
+	text-align: left;
+	padding: 10px;
+}
+
+td {
+	padding: 10px 0px;
+}
+
+form {
+	width: 50%;
+	margin: 0px auto;
+}
+
+table {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+textarea {
+	width: 100%;
+}
+
+caption {
+	font-size: 30pt;
+	margin: 20px 0px;
+}
+</style>
+<script type="text/javascript">
+	function ajaxWrite() {
+		var form = document.getElementById("writeForm");
+		var formData = new FormData(form);
+
+		$.ajax({
+			type : "POST",
+			url : "write",
+			processData: false,
+            contentType: false,
+			data : formData,
+			datatype : "json",
+			success : function(obj) {
+				alert(obj);
+			},
+			complete : function(data) {// 응답이 종료되면 실행, 잘 사용하지않는다
+			},
+			error : function(xhr, status, error) {
+				alert("ERROR!!!");
+			}
+		});
+	}
+</script>
+<title>BOARD WRITE</title>
+</head>
+<body>
+	<section layout:fragment="contents" style="width: 100%">
+		<form id="writeForm" method="post" enctype="multipart/form-data">
+			<table>
+				<caption>BOARD WRITE</caption>
+				<tr>
+					<th>TITLE</th>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" name="title" style="width: 100%;">
+					</td>
+				</tr>
+				<tr>
+					<th>CONTENTS</th>
+				</tr>
+				<tr>
+					<td>
+						<textarea rows="40" cols="100" name="contents"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: right;">
+						<input type="file" name="file">
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="userId" value="KIM HYEONG JUN">
+			<button type="button" onclick="ajaxWrite()">WRITE</button>
+		</form>
+	</section>
+</body>
+</html>

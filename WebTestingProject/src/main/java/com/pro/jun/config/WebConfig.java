@@ -4,14 +4,14 @@ import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -50,23 +50,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return new DbProperties();
 	}
 
-	@Bean /* (destroyMethod = "close") */
-	public OracleDataSource dataSource(DbProperties properties) throws SQLException {
-		log.info("[ DB URL ] = " + properties.getUrl());
-		/* DriverManagerDataSource dataSource = null; dataSource = new DriverManagerDataSource();
-		 * dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
-		 * dataSource.setDriverClassName("oracle.jdbc.OracleDriver"); dataSource.setUsername("SCOTT");
-		 * dataSource.setPassword("1234"); */
-
-		OracleDataSource dataSource = new OracleDataSource();
-		dataSource.setURL(properties.getUrl());
-		dataSource.setUser(properties.getUserName());
-		dataSource.setPassword(properties.getPw());
-		dataSource.setDataSourceName("ds");
-		dataSource.setDriverType(properties.getDriverName());
-
-		log.info("[ ORACLE DATABASE CONNECT ]");
-
-		return dataSource;
+	@Bean
+	public MultipartResolver multipartResolver() {
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		return resolver;
 	}
 }

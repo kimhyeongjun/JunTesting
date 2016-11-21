@@ -9,5 +9,5 @@ public interface BoardService {
 	public boolean modify(Board board);
 	public String delete(int num);
 	public String search(Search search);
-	public boolean insert(Board board);
+	public boolean write(Board board);
 }
