@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="uploadFile" parameterType="BoardVo">
 		INSERT INTO file_list(board_no, file_name, saved_file_name) VALUES(#{no}, #{fileName}, #{savedFileName})
 	</insert>
-	<select id="getBoardNo">
+	<select id="getBoardNo" resultType="Integer">
 		SELECT MAX(no) FROM board WHERE user_id = #{userId}
 	</select>
 </mapper>

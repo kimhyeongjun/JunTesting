@@ -2,6 +2,7 @@ package com.pro.jun.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,8 +48,8 @@ public class BoardController {
 	@ResponseBody
 	public String write(Board board) throws JsonProcessingException {
 		ObjectMapper objMapper = new ObjectMapper();
-		boolean msg = boardSVC.write(board);
-		return objMapper.writeValueAsString(msg);
+		HashMap<String, Object> resultMap = boardSVC.write(board);
+		return objMapper.writeValueAsString(resultMap);
 	}
 
 	@RequestMapping("ajax")

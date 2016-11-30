@@ -32,8 +32,8 @@ public class DBConfig {
 	ApplicationContext applicationContext;
 
 	private Log log = LogFactory.getLog(this.getClass());
-	
-	@Bean (destroyMethod = "close") 
+
+	@Bean(destroyMethod = "close")
 	public OracleDataSource dataSource(DbProperties properties) throws SQLException {
 		log.info("[ DB URL ] = " + properties.getUrl());
 		/* DriverManagerDataSource dataSource = null; dataSource = new DriverManagerDataSource();
@@ -60,25 +60,16 @@ public class DBConfig {
 	 * DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 	 * transactionManager.setDataSource(dataSource); return transactionManager; } */
 
-	/*@Bean
-	public ManagedTransactionFactory managedTransaction() {
-		return new ManagedTransactionFactory();
-	}
-	*/
+	/* @Bean public TransactionTemplate transactionTemplate(DataSourceTransactionManager manager) { TransactionTemplate
+	 * p = new TransactionTemplate(); p.setTransactionManager(manager); return p; } */
+
 	@Bean
 	public DataSourceTransactionManager manager(OracleDataSource dataSource) {
 		DataSourceTransactionManager manager = new DataSourceTransactionManager();
 		manager.setDataSource(dataSource);
 		return manager;
 	}
-	
-	/*@Bean
-	public TransactionTemplate transactionTemplate(DataSourceTransactionManager manager) {
-		TransactionTemplate p = new TransactionTemplate();
-		p.setTransactionManager(manager);
-		return p;
-	}
-*/
+
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactoryBean(OracleDataSource dataSource, ApplicationContext applicationContext) {
 
