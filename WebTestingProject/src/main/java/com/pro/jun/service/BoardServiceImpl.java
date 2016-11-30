@@ -78,7 +78,7 @@ public class BoardServiceImpl implements BoardService {
 		DateTime date = new DateTime();
 		HashMap<String, Object> resultMap = new HashMap<>();
 		try {
-			String originalStr = file.getOriginalFilename(); // 테스트
+			/*String originalStr = file.getOriginalFilename(); // 테스트
 			String[] charSet = { "utf-8", "euc-kr", "ksc5601", "iso-8859-1", "x-windows-949" };
 			for (int i = 0; i < charSet.length; i++) {
 				for (int j = 0; j < charSet.length; j++) {
@@ -88,16 +88,20 @@ public class BoardServiceImpl implements BoardService {
 						e.printStackTrace();
 					}
 				}
-			}
-			fileName = new String(file.getOriginalFilename().getBytes("iso-8859-1"), "utf-8");
+			}*/
+			fileName = new String(file.getOriginalFilename());
 			savedFileName = board.getUserId() + "_" + date.getMillis() + "_" + fileName;
+			File directory = new File(path);
+			if(!directory.isDirectory()) {
+				directory.mkdirs();
+			}
 			path += savedFileName;
 			board.setFileName(fileName);
 			board.setSavedFileName(savedFileName);
 			int resultCnt = 0;
 			resultCnt = boardDAO.write(board);
 			int boardNo = boardDAO.getBoardNo(board.getUserId());
-			// board.setNo(boardNo);
+			board.setNo(boardNo);
 			resultCnt = boardDAO.uploadFile(board);
 			file.transferTo(new File(path));
 
