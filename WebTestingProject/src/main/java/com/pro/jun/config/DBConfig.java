@@ -11,6 +11,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +33,7 @@ public class DBConfig {
 	@Autowired
 	ApplicationContext applicationContext;
 
-	private Log log = LogFactory.getLog(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Bean(destroyMethod = "close")
 	public OracleDataSource dataSource(DbProperties properties) throws SQLException {
@@ -83,7 +85,6 @@ public class DBConfig {
 			factoryBean.setTypeAliasesPackage("com.pro.jun.vo");
 			factoryBean.setTypeAliases(new Class<?>[] { Board.class });
 		} catch (IOException e) {
-			e.printStackTrace();
 			log.error("sqlSessionFactory ERROR", e);
 			return null;
 		}

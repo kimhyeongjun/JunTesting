@@ -7,7 +7,7 @@ import com.pro.jun.vo.Search;
 
 public interface BoardService {
 	public String getList();
-	public Board selectOne(int num);
+	public Board selectOne(int no);
 	public boolean modify(Board board);
 	public String delete(int num);
 	public String search(Search search);

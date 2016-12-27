@@ -12,7 +12,7 @@ public class Board {
 	private String userId;
 	private String title;
 	private String contents;
-	private Date creDate;
+	private Date cre_date;
 	private String fileName;
 	private String savedFileName;
 	private MultipartFile file;
@@ -74,12 +74,12 @@ public class Board {
 		this.contents = contents;
 	}
 
-	public Date getCreDate() {
-		return creDate;
+	public Date getCre_date() {
+		return cre_date;
 	}
 
-	public void setCreDate(Date creDate) {
-		this.creDate = creDate;
+	public void setCre_date(Date cre_date) {
+		this.cre_date = cre_date;
 	}
 
 	public String getFileName() {

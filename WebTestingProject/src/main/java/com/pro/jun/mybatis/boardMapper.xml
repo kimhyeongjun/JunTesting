@@ -24,4 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getBoardNo" resultType="Integer">
 		SELECT MAX(no) FROM board WHERE user_id = #{userId}
 	</select>
+	<select id="getSelectOne" resultType="BoardVo">
+		SELECT * FROM board WHERE no = #{no}
+	</select>
 </mapper>

@@ -4,6 +4,8 @@ import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +25,13 @@ import oracle.jdbc.pool.OracleDataSource;
 // @PropertySource("/WEB-INF/config/properties-config.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	// private Log log = LogFactory.getLog(this.getClass()); log4j 설정
+	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// TODO Auto-generated method stub
-		log.info("[ RESOURCES MAPPING ]");
+		LOGGER.info("[ RESOURCES MAPPING ]");
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources");
 	}
 
@@ -41,7 +44,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-		c.setLocation(new ClassPathResource("/com/pro/jun/properties-config.properties"));
+		c.setLocation(new ClassPathResource("properties-config.properties"));
 		return c;
 	}
 

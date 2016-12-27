@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{../templates/layout}">
+<head>
+<meta charset="UTF-8">
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<title>SELECT ONE</title>
+</head>
+<body>
+	<section layout:fragment="contents">
+		<table>
+			<caption th:text="${board.no}"></caption>
+			<tr>
+				<th>TITLE</th>
+				<td th:text="${board.title}">NULL TITLE</td>
+			</tr>
+			<tr>
+				<th>CONTENTS</th>
+				<td th:text="${board.contents}">NULL CONTENTS</td>
+			</tr>
+			<tr>
+				<th>CRE_DATE</th>
+				<td th:text="${board.cre_date}"></td>
+			</tr>
+		</table>
+	</section>
+</body>
+</html>

@@ -46,8 +46,11 @@ caption {
 			data : formData,
 			datatype : "json",
 			success : function(obj) {
-				alert(obj);
-				console.log(obj);
+				var json = JSON.parse(obj);
+				if(json.result == true) {
+					alert("글쓰기 완료");
+					window.location = "selectOne?no" + json.no; 
+				}
 			},
 			complete : function(data) {// 응답이 종료되면 실행, 잘 사용하지않는다
 			},
