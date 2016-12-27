@@ -90,13 +90,17 @@ public class BoardServiceImpl implements BoardService {
 			}*/
 			fileName = new String(file.getOriginalFilename());
 			savedFileName = board.getUserId() + "_" + date.getMillis() + "_" + fileName;
+			File directory = new File(path);
+			if(!directory.isDirectory()) {
+				directory.mkdirs();
+			}
 			path += savedFileName;
 			board.setFileName(fileName);
 			board.setSavedFileName(savedFileName);
 			int resultCnt = 0;
 			resultCnt = boardDAO.write(board);
 			int boardNo = boardDAO.getBoardNo(board.getUserId());
-			// board.setNo(boardNo);
+			board.setNo(boardNo);
 			resultCnt = boardDAO.uploadFile(board);
 			file.transferTo(new File(path));
 
