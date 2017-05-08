@@ -3,7 +3,7 @@
 	layout:decorate="~{../templates/layout}">
 <head>
 <meta charset="UTF-8">
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <style type="text/css">
 th {
 	text-align: left;
@@ -34,6 +34,21 @@ caption {
 }
 </style>
 <script type="text/javascript">
+	/* $(document).ready(function() {
+		var str = "{id:jun, name:김형준}";
+		// var json = JSON.parse(str);
+		// var ev = eval(str);
+		
+		var myObj = { "name":"John", "age":31, "city":"New York" };
+		var myJSON = JSON.stringify(myObj);
+		var json = JSON.parse(myJSON);
+		console.log(myJSON);
+		// console.log(ev);
+		console.log(json);
+		
+		window.location = "selectOne?no="+ 43 +"&jsonStr=" + myJSON; 
+	});
+ */
 	function ajaxWrite() {
 		var form = document.getElementById("writeForm");
 		var formData = new FormData(form);
@@ -58,6 +73,11 @@ caption {
 				alert("ERROR!!!");
 			}
 		});
+	}
+	
+	function test() {
+		var win=window.open("","_self");
+		win.close();
 	}
 </script>
 <title>BOARD WRITE</title>
@@ -91,6 +111,7 @@ caption {
 			</table>
 			<input type="hidden" name="userId" value="KIM HYEONG JUN">
 			<button type="button" onclick="ajaxWrite()">WRITE</button>
+			<button type="button" onclick="test()">test</button>
 		</form>
 	</section>
 </body>

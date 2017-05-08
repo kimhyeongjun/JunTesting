@@ -3,36 +3,28 @@ package com.pro.jun.logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.web.servlet.ModelAndView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+@Component
 public class LoggerInterceptor extends HandlerInterceptorAdapter {
 
-	protected Log log = LogFactory.getLog(LoggerInterceptor.class);
-
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		// TODO Auto-generated method stub
-		if (log.isDebugEnabled()) {
-			log.debug("==================          END           ===================");
-		}
-		super.postHandle(request, response, handler, modelAndView);
-	}
+	protected Logger LOGGER = LoggerFactory.getLogger(LoggerInterceptor.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		// TODO Auto-generated method stub
-		if (log.isDebugEnabled()) {
-			log.debug("==================         START           ===================");
-			log.debug("Request URI \t : " + request.getRequestURI());
+		LOGGER.info("==================         START           ===================");
+		LOGGER.info("SESSION URI : {} ", request.getSession().getId());
+		String sNo = request.getParameter("no");
+		if(sNo != null) {
+			int no = Integer.parseInt(sNo);
+			if(no == 43) return false;
+			else return true;
 		}
-		return super.preHandle(request, response, handler);
-	}
-
-	public LoggerInterceptor() {
-		log.info("=========== LOGGERINTERCEPTOR ==========");
+		else return true;
 	}
 
 }

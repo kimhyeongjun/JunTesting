@@ -6,6 +6,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getEmpList" resultType="com.pro.jun.utill.Emp">
 		select * from emp
 	</select>
+	<select id="getList" resultType="BoardVo">
+		SELECT NO, USER_ID, TITLE, CRE_DATE FROM board
+	</select>
 	<insert id="write" parameterType="BoardVo">
 		INSERT INTO board(no, user_id, title, contents, cre_date, per_no) VALUES(BOARD_NO_SEQ.NEXTVAL,#{userId}, #{title}, #{contents}, SYSDATE,
 		<choose>

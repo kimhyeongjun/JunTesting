@@ -5,6 +5,7 @@
 	<!-- 외부 설정파일을 사용할 수 있다. -->
 	<property resource="resource.properties" />
 	<property name="LOG_HOME" value="d:/log" />
+	<property name="LOG_HOME2" value="d:/log/fileLog" />
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level %C.%M line %L- %m%n"/>
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -12,10 +13,10 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/board_log.log</file>
+		<file>${LOG_HOME}/webTesting_log_.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- 파일이 하루에 한개씩 생성된다 -->
-			<fileNamePattern>${LOG_HOME}/ml_log_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/webTesting_log_%d{yyyy-MM-dd}.log</fileNamePattern>
 
 			<!-- maxHIstory 설정은 위 부분에 롤링 정책에 따라 적용되 된다고 보면된다. 위 설정데로 라면 30일이 지난 파일은 삭제가 된다. -->
 			<maxHistory>30</maxHistory>
@@ -25,24 +26,49 @@
 			<pattern>${LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
+	<appender name="DELFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME2}/file_log_.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 파일이 하루에 한개씩 생성된다 -->
+			<fileNamePattern>${LOG_HOME2}/file_log_%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- maxHIstory 설정은 위 부분에 롤링 정책에 따라 적용되 된다고 보면된다. 위 설정데로 라면 30일이 지난 파일은 삭제가 된다. -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="com.pro.jun.scheduler.FileManager" level="info">
+		<appender-ref ref="console" />
+		<appender-ref ref="DELFILE" />
+	</logger>
 
 	<logger name="org.springframework" level="error" />
 	<logger name="oracle.jdbc.driver" level="error" />
-	<logger name="com.jcone.ml.server" level="debug" />
-	<if condition='property("RUN_MODE").equals("SERVICE")'>
+	<logger name="com.pro.jun" level="info">
+		<appender-ref ref="console" />
+		<appender-ref ref="FILE" />
+	</logger>
+	<!-- <root level="DEBUG">
+		<appender-ref ref="console" />
+	</root> -->
+	<!-- <if condition='property("RUN_MODE").equals("SERVICE")'>
 		<then>
-			<!-- 설정파일에 RUN_MODE 가 SERVICE로 정의되어 있으면 로깅 레벨을 INFO로 지정 -->
-			<root level="info">
-				<appender-ref ref="console" />
-				<appender-ref ref="FILE" />
-			</root>
-		</then>
-		<!-- 설정파일에 RUN_MODE 가 SERVICE로 정의되어 있지 않으면 로깅 레벨을 DEBUG 지정 -->
-		<else>
+			설정파일에 RUN_MODE 가 SERVICE로 정의되어 있으면 로깅 레벨을 INFO로 지정
 			<root level="debug">
 				<appender-ref ref="console" />
 				<appender-ref ref="FILE" />
 			</root>
+		</then>
+		설정파일에 RUN_MODE 가 SERVICE로 정의되어 있지 않으면 로깅 레벨을 DEBUG 지정
+		<else>
+			<root level="info">
+				<appender-ref ref="console" />
+				<appender-ref ref="FILE" />
+			</root>
 		</else>
-	</if>
+	</if> -->
 </configuration>
