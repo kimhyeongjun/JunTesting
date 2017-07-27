@@ -1,21 +1,22 @@
 package com.pro.jun.controller;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,8 +48,9 @@ public class BoardController {
 	 * boardSVC.getEmpList()); model.setViewName("empList"); return model; } */
 
 	@RequestMapping("list")
-	public ModelAndView getList() {
+	public ModelAndView getList(@RequestParam HashMap<String,String>map) {
 		LOGGER.info("=============== getEmpList() START ===============");
+		LOGGER.info("PARAM => {}", map.get("test"));
 		ModelAndView model = new ModelAndView();
 		model.addObject("list", boardSVC.getList());
 		model.setViewName("boardList");
@@ -61,13 +64,25 @@ public class BoardController {
 		LOGGER.info("FILE_PATH => {}", request.getParameter("path"));
 		LOGGER.info("FILE => {}", multi.getFileNames());
 		
-		File downFile = new File("d://data/TEST_COPY.pdf");
-		InputStream is = file.getInputStream();
-		int cnt = 0;
-		FileOutputStream fos = new FileOutputStream(downFile);
-		fos.write(file.getBytes());
+		/*File downFile = new File("d:/data/TEST_COPY.pdf");
+		FileOutputStream fos = new FileOutputStream(downFile);*/
+		// File desFile = new File(desFolderPath + command + "_description.xml");
+		Document document = null;
+		try {
+			document = new SAXBuilder().build(file.getInputStream());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<Element> list = document.getRootElement().getChildren();
+		for (int i = 0; i < list.size(); i++) {
+			String nodeName = list.get(i).getName();
+			LOGGER.info(nodeName);
+		}
+		
+		/*fos.write(file.getBytes());
 		fos.flush();
-		fos.close();
+		fos.close();*/
 		PrintWriter pw = response.getWriter();
 		ObjectMapper objMapper = new ObjectMapper();
 		HashMap<String, Object> map = new HashMap<>();
@@ -82,8 +97,14 @@ public class BoardController {
 
 	@RequestMapping("writeView")
 	public String writeView(@RequestParam LinkedHashMap<String, String> map) {
+	// public ModelAndView writeView(@RequestParam LinkedHashMap<String, String> map) {
+		ModelAndView model = new ModelAndView("redirect:list");
+		// RedirectView rv = new RedirectView("redi");
 		LOGGER.info("MAP => {}", map);
+		HashMap<String, String> dmap = new HashMap<>();
+		model.addObject("test", dmap);
 		return "boardWrite";
+		// return model;
 	}
 
 	/**

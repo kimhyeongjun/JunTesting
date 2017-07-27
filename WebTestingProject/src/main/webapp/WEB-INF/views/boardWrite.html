@@ -34,7 +34,16 @@ caption {
 }
 </style>
 <script type="text/javascript">
-	/* $(document).ready(function() {
+/* 	window.onload = function() {
+		try {
+			var liDom = documents.getElementsByClassName("liTag");
+			console.log(liDom[0]);			
+		} catch (e) {
+			// TODO: handle exception
+			alert(e);
+		}
+	} */
+/* 	$(document).ready(function() {
 		var str = "{id:jun, name:김형준}";
 		// var json = JSON.parse(str);
 		// var ev = eval(str);
@@ -46,9 +55,14 @@ caption {
 		// console.log(ev);
 		console.log(json);
 		
-		window.location = "selectOne?no="+ 43 +"&jsonStr=" + myJSON; 
+		try {
+			var liDom = document
+		} catch (e) {
+			alert(e);
+		}
+		
+		// window.location = "selectOne?no="+ 43 +"&jsonStr=" + myJSON; 
 	});
- */
 	function ajaxWrite() {
 		var form = document.getElementById("writeForm");
 		var formData = new FormData(form);
@@ -73,10 +87,10 @@ caption {
 				alert("ERROR!!!");
 			}
 		});
-	}
+	} */
 	
 	function test() {
-		var win=window.open("","_self");
+		var win=window.open("http://localhost:8082/EFORM_TEST/pureWeb/requestEmptyJsp.jcg","_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=400,height=400");
 		win.close();
 	}
 </script>
@@ -113,6 +127,21 @@ caption {
 			<button type="button" onclick="ajaxWrite()">WRITE</button>
 			<button type="button" onclick="test()">test</button>
 		</form>
+	</section>
+	<section>
+		<ul>
+			<li class="liTag">1</li>
+			<li class="liTag">2</li>
+			<li class="liTag">3</li>
+			<li class="liTag">4</li>
+			<li class="liTag">5</li>
+			<li class="liTag">6</li>
+			<li class="liTag">7</li>
+			<li class="liTag">8</li>
+			<li class="liTag">9</li>
+			<li class="liTag">10</li>
+			<li class="liTag">11</li>
+		</ul>
 	</section>
 </body>
 </html>
