@@ -30,8 +30,6 @@ public class FileManager {
 		LOGGER.info("DATE => {}", nowDate.toString());
 		// throw new NullPointerException();
 		String path = "D://hieForm_dev/";
-		String eformTEMP = "D://hieForm_dev/eformTEMP/";
-		String eformXMLTEMP = "D://hieForm_dev/eformXML/TEMP/";
 		File filePath = new File(path);
 
 		File[] fileListDepth01 = filePath.listFiles(new FilenameFilter() {
