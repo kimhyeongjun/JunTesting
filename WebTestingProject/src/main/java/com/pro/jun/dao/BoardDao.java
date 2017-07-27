@@ -13,4 +13,6 @@ public interface BoardDao {
 	public int write(Board board);
 	public int uploadFile(Board board);
 	public int getBoardNo(String userId);
+	public Board getSelectOne(int no);
+	public List<Board> getList();
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{../templates/layout}">
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript">
+	function selectOne(no) {
+		location.href="selectOne?no=" + no;
+	}
+</script>
+<title>BOARD LIST</title>
+</head>
+<body>
+	<section layout:fragment="contents" style="width: 100%">
+		<table border=1 style="width: 100%">
+			<tr>
+				<td>NO</td>
+				<td>TITLE</td>
+				<td>ID</td>
+				<td>DATE</td>
+			</tr>
+			<tr th:each="rt : ${list}">
+				<td th:text="${rt.no}" onClick="selectOne(${rt.no})"><a href="selectOne?no=${rt.no}">1</a></td>
+				<td th:text="${rt.title}"></td>
+				<td th:text="${rt.userId}"></td>
+				<td th:text="${rt.cre_date}"></td>
+			</tr>
+		</table>
+	</section>
+</body>
+</html>

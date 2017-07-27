@@ -6,6 +6,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getEmpList" resultType="com.pro.jun.utill.Emp">
 		select * from emp
 	</select>
+	<select id="getList" resultType="BoardVo">
+		SELECT NO, USER_ID, TITLE, CRE_DATE FROM board
+	</select>
 	<insert id="write" parameterType="BoardVo">
 		INSERT INTO board(no, user_id, title, contents, cre_date, per_no) VALUES(BOARD_NO_SEQ.NEXTVAL,#{userId}, #{title}, #{contents}, SYSDATE,
 		<choose>
@@ -21,7 +24,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="uploadFile" parameterType="BoardVo">
 		INSERT INTO file_list(board_no, file_name, saved_file_name) VALUES(#{no}, #{fileName}, #{savedFileName})
 	</insert>
-	<select id="getBoardNo">
+	<select id="getBoardNo" resultType="Integer">
 		SELECT MAX(no) FROM board WHERE user_id = #{userId}
+	</select>
+	<select id="getSelectOne" resultType="BoardVo">
+		SELECT * FROM board WHERE no = #{no}
 	</select>
 </mapper>

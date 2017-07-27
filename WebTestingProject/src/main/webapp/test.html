@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+	function divShow() {
+		$("#back").css("display","block");
+		var divHeight = document.getElementById("back").offsetHeight;
+		var aTop = divHeight / 2 + (document.getElementsByClassName("del")[0].offsetHeight / 2);
+		console.log(aTop);
+		document.getElementsByClassName("del")[0].style.top = -aTop + "px";
+	}
+	
+
+	/* 진행 사항 작성 체크 텍스트 */
+	var proccessTxt = "";
+	var mainDept = '00040';
+	var mainInsp = '091';
+	var startRowNum = "1";
+	var endRowNum = "2";
+	var preStartRowNum = 1;
+	var preEndRowNum = 2;
+	var afterStartRowNum = 1;
+	var afterEndRowNum = 2;
+	var nowStartRowNum = 1;
+	var nowEndRowNum = 2;
+	var rowCnt = 2;
+	var orderType = 0;
+	var sRowN = startRowNum;
+	var eRowN = endRowNum;
+		/* 마이페이지 */
+		function loadMyPage() {
+			location.href = "../sci/myPageView.jcg?id=&name=송주연&tel=&command=none";
+		}
+		
+		/* 날짜 정렬 리스트 클릭 */
+		function pressOrderByList(type) {
+			
+			
+			$(".days li").removeClass("on");
+			$("#li_"+type).addClass("on");
+			
+			$("#aListMain").prop("selected", true);
+
+			// orderListSize = 0;
+			if(orderType == type) {
+				/* if(type == 0) {
+					sRowN = startRowNum;
+					eRowN = endRowNum;
+				} else if(type == 1) {
+					sRowN = preStartRowNum;
+					eRowN = preEndRowNum;
+				} else if(type == 2) {
+					sRowN = nowStartRowNum;
+					eRowN = nowEndRowNum;
+				} else if(type == 3) {
+					sRowN = afterStartRowNum;
+					eRowN = afterEndRowNum;
+				} */
+			} else {
+				sRowN = 1;
+				eRowN = rowCnt;
+				/* afterStartRowNum = 1;
+				afterEndRowNum = rowCnt;
+				preStartRowNum = 1;
+				preEndRowNum = rowCnt;
+				nowStartRowNum = 1;
+				nowEndRowNum = rowCnt;
+				startRowNum = 1;
+				endRowNum = rowCnt; */
+			}
+			orderType = type;
+			ajaxAddList(sRowN, eRowN);
+			// orderByList(orderType);
+			
+		}
+		
+		function ajaxAddList(sRowN, eRowN) {
+			$.ajax({
+				type:'POST',
+				url:"addDocList.jcg",
+				data : {
+					"orderType" : orderType,
+					"DEPT_CD" : mainDept,
+					"INSP_CD" : mainInsp,
+					"listSize" : sRowN,
+					"listEndSize" : eRowN
+				},
+				dataType:"JSON",
+				success: function(obj) {
+					console.log(obj);
+					var objLength = obj.length;
+					if(objLength > 0) {
+						for(var i = 0; i < objLength; i++) {
+							var listHTML = "<section class=business_list>"
+							+"	<a href=# class=icon_open arrow onClick='showRequest("+dataNullCheck(obj[i].rnum)+")' id='a_"+dataNullCheck(obj[i].rnum)+"'>open</a>"
+							+"	<table width=100% border=0 cellspacing=0 cellpadding=0 class=business_tb custom_tb>"
+							+"		<caption>이력보기</caption>"
+							+"		<colgroup>"
+							+"			<col width='7%'>"
+							+"			<col width='29%'>"
+							+"			<col width='13%'>"
+							+"			<col width='24%'>"
+							+"			<col width='9%'>"
+							+"			<col width=''>"
+							+"		</colgroup>"
+							+"		<tbody>"
+							+"			<tr>"
+							+"				<th>상품명</th>"
+							+"				<td>"+dataNullCheck(obj[i].cd_NM)+"</td>"
+							+"				<th>차주/소유주</th>"
+							+"				<td>"+dataNullCheck(obj[i].fami_HD)+"/"+dataNullCheck(obj[i].debt_NM)+"</td>"
+							+"				<th>조사요구</th>"
+							+"				<td>"+dataNullCheck(obj[i].trns_REQ_DT)+" "+ dataNullCheck(obj[i].trns_REQ_TM) +"</td>"
+							+"			</tr>"
+							+"			<tr>"
+							+"				<th>주소</th>"
+							+"				<td>"+dataNullCheck(obj[i].obj_ADDR1) + dataNullCheck(obj[i].obj_ADDR2)+"</td>"
+							+"				<th>금융기관</th>"
+							+"				<td>"+dataNullCheck(obj[i].cust_NM)+"</td>"
+							+"				<th>진행사항</th>"
+							+"				<td>"+dataNullCheck(obj[i].msg_DT_TM)+"</td>"
+							+"			</tr>"
+							+"		</tbody>"
+							+"	</table>"
+							+"	<ul class=btn_4>"
+							+"		<li>"
+							+"			<a href=# name=progress class=move_btn onclick='pressSendData('"+dataNullCheck(obj[i].subscriptionNumber)+"')'>"
+							+"				<img src='../images/move_btn.png' alt='이동'>"
+							+"			</a>"
+							+"		</li>"
+							+"		<li>"
+							+"			<a href='#' onclick='requestViewer('"+dataNullCheck(obj[i].prod_CODE)+"','"+dataNullCheck(obj[i].cust_CD)+"','"+dataNullCheck(obj[i].entr_DT)+"','"+dataNullCheck(obj[i].entr_DEPT)+"','"+dataNullCheck(obj[i].entr_SEQ)+"','"+dataNullCheck(obj[i].entr_CNT)+"','"+dataNullCheck(obj[i].josa_STAT)+"','"+dataNullCheck(obj[i].req_DT)+"')'>"
+							+"				<img src='../images/request_btn.png' alt=문의>"
+							+"			</a>"
+							+"		</li>"
+							+"		<li>"
+							+"			<input type='checkbox' class=icon_chk sendCheck>"
+							+"			<input type='hidden' value='"+dataNullCheck(obj[i].docId)+"' class=docId/>"
+							+"			<input type='hidden' value='"+dataNullCheck(obj[i].subscriptionNumber)+"' class=subscriptionNumber/>"
+							+"		</li>"
+							+"	</ul>"
+							+"</section>"
+							+"<div class=con con_"+dataNullCheck(obj[i].rnum)+" style='display: none'; id=con_"+dataNullCheck(obj[i].rnum)+" onclick=callEform('"+dataNullCheck(obj[i].docId)+"','"+dataNullCheck(obj[i].subscriptionNumber)+"')>";
+							
+							
+							for(var j = 0; j < obj[i].fileNames.length; j++) {
+								for(var t = 0; t < obj[i].fileNames[j].names.length; t++) {
+									listHTML += "<span style='font-weight: bold;'>서식 명</span> : '"+dataNullCheck(obj[i].fileNames[j].names[t])+"'</br>";
+									if((obj[i].fileNames[j].names.length -1) == j ) {
+										// listHTML += "<a href=# class=del-btn onClick=deleteXmlFileAndDb('"+obj[i].subscriptionNumber+"')>삭제</a>";
+									}
+								}
+								for(var m = 0; m < obj[i].fileNames[j].formIdList.length; m++) {
+									listHTML += "<input type='hidden' class=formId	value='"+dataNullCheck(obj[i].fileNames[j].formIdList[m])+"'/>";
+								}
+							}
+							
+							
+							listHTML += "</div>";
+							if(obj[i].rnum == '1') {
+								$("#contents").html(listHTML);
+							} else {
+								$("#contents").append(listHTML);
+							}
+						}
+						sRowN += objLength;
+						eRowN += objLength;
+						/* if(orderType == 0) {
+							startRowNum += obj.length;
+							endRowNum += obj.length;
+						} else if(orderType == 1) {
+							preStartRowNum += obj.length;
+							preEndRowNum += obj.length;
+						} else if(orderType == 2) {
+							nowStartRowNum += obj.length;
+							nowEndRowNum += obj.length;
+						} else if(orderType == 3) {
+							afterStartRowNum += obj.length;
+							afterEndRowNum += obj.length;
+						} */
+					} else {
+						// 전체인데 처음불러옴   ||    검색인데 처음불러옴     ||      정렬인데 처음불러옴
+						var listHTML = '<section class="business_list">' + '<div style="text-align: center;"> 데이터가 존재하지 않습니다. </div>' + '</section>';
+						$("#contents").html(listHTML);
+					}
+				}, complete:function(){			// 이미지 감추기
+					$('.wrap-loading').addClass('display-none');
+				},
+				error : function(xhr, textStatus, error) {
+					if (xhr.status == "901") {
+						location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+					}
+				},
+				beforeSend : function(xmlHttpRequest) {	// 이미지 보여주기
+					$('.wrap-loading').removeClass('display-none');
+					xmlHttpRequest.setRequestHeader("AJAX", "true");
+				}
+			});
+		}
+		
+		/* 요청사항 보기 */
+		function showRequest(idx) {
+			var id = '.con_'+idx;
+			var a = '#a_'+idx;
+			if($(id).css('display') == 'none'){
+			    $(a).addClass("icon_fold");
+				$(id).css('display', 'block');
+			}else if($(id).css('display') == 'block'){
+			    $(a).removeClass("icon_fold");
+				$(id).css('display', 'none');
+			}
+		}
+		
+		/* 의뢰서 보기 */
+		function requestViewer(prod,cust,entrDt,entrDept,entrSeq,entrCnt,josaStat,reqDt) {
+			$.ajax({
+				type:'GET',
+				url:'../sci2/makeRequestXml.jcg?prodCode='+prod+'&custCD='+cust+'&entrDt='+entrDt+'&entrDept='+entrDept+'&entrSeq='+entrSeq+'&entrCnt='+entrCnt+'&josaStat='+josaStat+'&reqDt='+reqDt,
+				// url:'../sci2/makeRequestXml.jcg',
+				// data : jsonData,
+				dataType:"JSON",
+				success: function(data) {
+					console.log(data.DOCUMENT_ID);
+					console.log(data.SUBSCRIPTION_NUMBER);
+					if(data.result == "S"){
+						try {
+							alert("JSCALL");
+							window.location =  "jscall://jsonList?url=http://eform.sci.co.kr/hieform&documentId="+data.DOCUMENT_ID+"&subscriptionNumber="+data.SUBSCRIPTION_NUMBER+"&requestView=Y";
+						} catch (ex){}	
+					}
+				},
+				error : function(xhr, textStatus, error) {
+					if (xhr.status == "901") {
+						location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+					}
+				},
+				beforeSend : function(xmlHttpRequest) {
+					xmlHttpRequest.setRequestHeader("AJAX", "true");
+				}
+			});
+		}
+		
+		/* 진행사항 버튼 누름 */
+		function pressSendData(sub) {
+			$('.save').attr("id",sub);
+			
+			getProgressDataList(sub);
+
+	    	$('.lypop_bg').ontouchmove= function(e){e.preventDefault();}
+	    	$('#progressTable').ontouchmove = function(e){e.stopPropagation();}
+			$('#progressSection').addClass('lyshow');
+			$('#progressSection').removeClass('lyhide');
+		}
+		
+		/* 관련 파일, DB 삭제 */
+		function deleteXmlFileAndDb(subscriptionNumber) {
+			var formIdArr = new Array();
+			$.ajax({
+				type : "POST",
+				url : "deleteXmlFileAndDb",
+				data : {
+					"subscriptionNumber" : subscriptionNumber, "formId" : formIdArr, "orderType" : orderType
+				},
+				success : function(obj) {
+					alert(obj);
+				},
+				error : function(xhr, textStatus, error) {
+					if (xhr.status == "901") {
+						location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+					}
+				},
+				beforeSend : function(xmlHttpRequest) {
+					xmlHttpRequest.setRequestHeader("AJAX", "true");
+				}
+			});
+		}
+		
+		/* 진행사항에 데이터 넣는 함수 */
+		function getProgressDataList(sub) {
+			$.ajax({
+				type:'GET',
+				url:'../sci2/getProgressContent.jcg?subscriptionNumber='+sub,
+				dataType:"JSON",
+				success: function(data) {
+					console.log('data : ' + data);
+					if(data.length > 0){
+						console.log(data.length);
+						for(var i=0;i< data.length;i++){
+							var listHTML = "<tr><td align=center>"+dataNullCheck(data[i].rnum)+"</td><td>"+dataNullCheck(data[i].msg_DSCR)+"</td><td>"+dataNullCheck(data[i].msg_DT_TM)+"</td></tr>";
+							if(data[i].rnum == '1'){
+								$(".progressTbody").html(listHTML);
+							}else{
+								$(".progressTbody").append(listHTML);
+							}
+						}
+					}else{
+						var listHTML = '<tr><td colspan="3" style="text-align: center;"> 작성된 데이터가 없습니다.</td></tr>';
+						$(".progressTbody").html(listHTML);
+					}
+				},complete:function(){			// 이미지 감추기
+					$('.wrap-loading').addClass('display-none');
+				},
+				error : function(xhr, textStatus, error) {
+					if (xhr.status == "901") {
+						location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+					}
+				},
+				beforeSend : function(xmlHttpRequest) {
+					$('.wrap-loading').removeClass('display-none');
+					xmlHttpRequest.setRequestHeader("AJAX", "true");
+				}
+			});
+		}
+		
+		/* 진행사항 라디오버튼 처럼, 선택한 값 proccessTxt에 저장 */
+		function pressLypop(idx) {
+			
+	 		if($("#ly_"+idx).prop("checked")){
+	 			
+				$("input[type=checkbox]").prop("checked", false);
+				$("#ly_"+idx).prop("checked",true);
+				proccessTxt = $("#ly_label_"+idx).text();
+				console.log("123pro     :    " + proccessTxt);
+			}else{
+				$("input[type=checkbox]").prop("checked", false);
+				
+				proccessTxt = "";
+				console.log("123pro     :    " + proccessTxt);
+			}
+	 	
+		}
+		
+		/* 진행사항에서 전송누름 */
+		function setProgress() {
+			var progressTxt = $("#progressComment").val();
+			var sub = $(".save").attr("id");
+			
+			if((proccessTxt != null && proccessTxt != "") || ( progressTxt != null && progressTxt != "" )){
+				
+				$.ajax({
+					type:'GET',
+					url:'../sci2/insertProgressContent.jcg?checkTxt='+proccessTxt+'&areaTxt='+progressTxt+'&subscriptionNumber='+sub+'&dept='+mainDept+'&insp='+mainInsp,
+					success: function(data) {
+						if(data == "Success"){
+							$('#progressComment').val('');
+							proccessTxt = "";
+							$("input[type=checkbox]").prop("checked", false);
+							getProgressDataList(sub);
+						}else{ 
+							alert("진행사항 추가 실패");
+						}
+					},complete:function(){			// 이미지 감추기
+						$('.wrap-loading').addClass('display-none');
+					},
+					error : function(xhr, textStatus, error) {
+						if (xhr.status == "901") {
+							location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+						}
+					},
+					beforeSend : function(xmlHttpRequest) {
+						$('.wrap-loading').removeClass('display-none');
+						xmlHttpRequest.setRequestHeader("AJAX", "true");
+					}
+				});
+				
+			}else{
+				alert('내용을 입력해주세요');
+			}
+		}
+		
+		/* json 데이터 null check */
+		function dataNullCheck(data) {
+			if(data == null || data == 'null'){
+				return '';
+			}else{
+				return data;
+			}
+		}
+		
+		/* 체크박스 전체 선택 및 해제 컨트롤 함수 */
+		function allCheckBoxController(commInt) {
+			var checkBox = document.getElementsByClassName('sendCheck');
+			var bool = true;
+			if(commInt == 1) {
+				bool = true;
+			} else {
+				bool = false;
+			}
+			for(var i = 0; i < checkBox.length; i++) {
+				checkBox[i].checked = bool;
+			}
+			/* if(commInt == 1) $(".icon_chk").prop("checked", true);
+			else $(".icon_chk").prop("checked", false); */
+		}
+		
+		/* 체크박스 선택해서 EFORM 서버로 합본할 서식에 대한 데이터를 전달하는 함수 */
+		function callEformMergeFunc() {
+			var docIdArr = new Array();
+			var subscriptionNumberArr = new Array();
+			var checkBox = document.getElementsByClassName('sendCheck');
+			var docIdDom = document.getElementsByClassName('docId');
+			var subscriptionNumberDom = document.getElementsByClassName('subscriptionNumber');
+			var listDom = document.getElementsByClassName("business_list");
+			var parentDom = document.getElementById("contents");
+			var successArr = new Array();
+			for(var i = 0; i < checkBox.length; i++) {
+				if(checkBox[i].checked) {
+					if(docIdDom[i].value != "" && subscriptionNumberDom[i].value != "") {
+						docIdArr.push(docIdDom[i].value);
+						subscriptionNumberArr.push(subscriptionNumberDom[i].value);
+					}
+					// console.log(docIdArr);
+				}
+			}
+			console.log(docIdArr);
+			$.ajaxSettings.traditional = true;
+			/* for(var j = 0; j < docIdArr.length; j++) { */
+				$.ajax({
+					type:'POST',
+					url:'ajaxEformMergeFunc.jcg',
+					data : {
+						"documentId" : docIdArr, "subscriptionNumber" : subscriptionNumberArr
+					},
+					dataType:"JSON",
+					success: function(data) {
+						if(data.length == docIdDom.length) {
+							alert("S");
+						} else {
+							alert("N");
+						}
+						
+						for(var k = data.length - 1; k >= 0; k--) {
+							parentDom.removeChild(listDom[data[k]]);
+						}
+						/* if(data == "Success"){
+							successArr.push(j);
+							if(successArr.length == docIdArr.length) {
+								alert("전송성공");
+							} else {
+								for(var k = successArr.length - 1; k >= 0; k--) {
+									parentDom.removeChild(listDom[successArr[k]]);
+								}
+							}
+						} */
+					},complete:function(){			// 이미지 감추기
+						$('.wrap-loading').addClass('display-none');
+					},
+					error : function(xhr, textStatus, error) {
+						if (xhr.status == "901") {
+							location.href = "../sci/loginView.jcg?COMMAND=NOT_LOGIN";
+						}
+					},
+					beforeSend : function(xmlHttpRequest) {
+						$('.wrap-loading').removeClass('display-none');
+						xmlHttpRequest.setRequestHeader("AJAX", "true");
+					}
+				});
+			/* } */
+		}
+		
+		// 초기XML 생성 후 해당 documentId와 subscriptionNumber(접수번호)로 hieform 호출
+	 	function callEform(docId, subNum) {
+			try {
+				alert("EFORM CALL");
+				window.location = "jscall://jsonList?url=http://eform.sci.co.kr/hieform&documentId="+docId+"&subscriptionNumber="+subNum;
+			} catch (ex){}
+		}
+
+</script>
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="wrap" onclick="divShow()">
+		<div style="background:#ccc;">test<br><br><br><br><br><br></div>
+		<div id="back" style="display:none; background: #aaa;">
+			<span>TEST01</span><br>
+			<span>TEST01</span><br>
+			<span>TEST01</span><br>
+			<span>TEST01</span><br>
+			<a href="#" class="del" style="position:relative; float: right;">삭제</a>
+		</div>
+	</div>
+</body>
+</html>
