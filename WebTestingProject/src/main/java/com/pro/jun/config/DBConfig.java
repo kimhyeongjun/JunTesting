@@ -3,21 +3,17 @@ package com.pro.jun.config;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.pro.jun.dao.BoardDao;
 import com.pro.jun.utill.Board;
@@ -31,9 +27,9 @@ public class DBConfig {
 	@Autowired
 	ApplicationContext applicationContext;
 
-	private Log log = LogFactory.getLog(this.getClass());
-	
-	@Bean (destroyMethod = "close") 
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Bean(destroyMethod = "close")
 	public OracleDataSource dataSource(DbProperties properties) throws SQLException {
 		log.info("[ DB URL ] = " + properties.getUrl());
 		/* DriverManagerDataSource dataSource = null; dataSource = new DriverManagerDataSource();
@@ -60,25 +56,16 @@ public class DBConfig {
 	 * DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 	 * transactionManager.setDataSource(dataSource); return transactionManager; } */
 
-	/*@Bean
-	public ManagedTransactionFactory managedTransaction() {
-		return new ManagedTransactionFactory();
-	}
-	*/
+	/* @Bean public TransactionTemplate transactionTemplate(DataSourceTransactionManager manager) { TransactionTemplate
+	 * p = new TransactionTemplate(); p.setTransactionManager(manager); return p; } */
+
 	@Bean
 	public DataSourceTransactionManager manager(OracleDataSource dataSource) {
 		DataSourceTransactionManager manager = new DataSourceTransactionManager();
 		manager.setDataSource(dataSource);
 		return manager;
 	}
-	
-	/*@Bean
-	public TransactionTemplate transactionTemplate(DataSourceTransactionManager manager) {
-		TransactionTemplate p = new TransactionTemplate();
-		p.setTransactionManager(manager);
-		return p;
-	}
-*/
+
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactoryBean(OracleDataSource dataSource, ApplicationContext applicationContext) {
 
@@ -92,7 +79,6 @@ public class DBConfig {
 			factoryBean.setTypeAliasesPackage("com.pro.jun.vo");
 			factoryBean.setTypeAliases(new Class<?>[] { Board.class });
 		} catch (IOException e) {
-			e.printStackTrace();
 			log.error("sqlSessionFactory ERROR", e);
 			return null;
 		}
