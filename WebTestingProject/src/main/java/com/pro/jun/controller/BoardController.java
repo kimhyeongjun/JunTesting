@@ -1,6 +1,8 @@
 package com.pro.jun.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -55,6 +56,42 @@ public class BoardController {
 		model.addObject("list", boardSVC.getList());
 		model.setViewName("boardList");
 		return model;
+	}
+	
+	@RequestMapping("download")
+	// public @ResponseBody String fileDownload() {
+	public byte[] fileDownload() {
+		ObjectMapper mapper = new ObjectMapper();
+		LOGGER.info("파일다운로드");
+		String filePath = "D:\\EFORM\\data\\hieform\\TEST_PDF.xml";
+		byte[] byteArray = null;
+		File file = new File(filePath);
+		byteArray = new byte[(int) file.length()];
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			fis.read(byteArray);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(fis != null) try {
+				fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		String result = null;
+		try {
+			result = mapper.writeValueAsString(byteArray);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		LOGGER.info(result);
+		
+		// return result;
+		return byteArray;
 	}
 
 	@RequestMapping("eform")
