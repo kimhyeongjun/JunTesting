@@ -1,5 +1,6 @@
 package com.pro.jun.controller;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,12 +46,11 @@ public class BoardController {
 	@Autowired
 	private BoardService boardSVC;
 
-	/* @RequestMapping("empList") public ModelAndView getList(ModelAndView model) {
-	 * log.info("=============== getEmpList() START ==============="); model.addObject("empList",
-	 * boardSVC.getEmpList()); model.setViewName("empList"); return model; } */
+	/* @RequestMapping("empList") public ModelAndView getList(ModelAndView model) { log.info("=============== getEmpList() START ===============");
+	 * model.addObject("empList", boardSVC.getEmpList()); model.setViewName("empList"); return model; } */
 
 	@RequestMapping("list")
-	public ModelAndView getList(@RequestParam HashMap<String,String>map) {
+	public ModelAndView getList(@RequestParam HashMap<String, String> map) {
 		LOGGER.info("=============== getEmpList() START ===============");
 		LOGGER.info("PARAM => {}", map.get("test"));
 		ModelAndView model = new ModelAndView();
@@ -57,41 +58,87 @@ public class BoardController {
 		model.setViewName("boardList");
 		return model;
 	}
-	
+
 	@RequestMapping("download")
 	// public @ResponseBody String fileDownload() {
-	public byte[] fileDownload() {
+	public void fileDownload(MultipartHttpServletRequest request, HttpServletResponse response) {
 		ObjectMapper mapper = new ObjectMapper();
 		LOGGER.info("파일다운로드");
-		String filePath = "D:\\EFORM\\data\\hieform\\TEST_PDF.xml";
+		// String filePath = "D:\\EFORM\\data\\hieform\\TEST_PDF.xml";
+		String filePath = "D:/EFORM/data/hieform/eformPDF/ADDSIGN.pdf";
+		String boundary = "dkjsei40f9844djs8dviwdf";
 		byte[] byteArray = null;
 		File file = new File(filePath);
 		byteArray = new byte[(int) file.length()];
 		FileInputStream fis = null;
+//		try {
+//			fis = new FileInputStream(file);
+//		} catch (FileNotFoundException e1) {
+//			e1.printStackTrace();
+//		}
+//		String result = null;
+//		try {
+//			result = mapper.writeValueAsString(byteArray);
+//		} catch (JsonProcessingException e) {
+//			e.printStackTrace();
+//		}
+		DataOutputStream dos = null;
+		ServletOutputStream sout = null;
 		try {
+			int len = (int) file.length();
 			fis = new FileInputStream(file);
-			fis.read(byteArray);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+			byte[] data = new byte[len];
+			fis.read(data);
+			response.setContentType("multipart/form-data;boundary=dkjsei40f9844djs8dviwdf;charset=UTF-8");
+			response.setHeader("Content-Transfer-Encoding:", "base64");
+			response.setHeader("Content-Disposition", "attachment;filename=" + file.getName() + ";");
+			response.setHeader("Content-Length", String.valueOf(len));
+			sout = response.getOutputStream();
+			sout.write(data, 0, len);
+			sout.flush();
+//			dos = new DataOutputStream(response.getOutputStream());
+//			dos.writeBytes("--" + boundary + "\r\n");
+//			dos.writeBytes("Content-Disposition: form-data; name=\"" + "jun" + "\"\r\n");
+//			dos.writeBytes("\r\n");
+//			dos.writeBytes("dddd");
+//			dos.writeBytes("\r\n");
+//			dos.writeBytes("--" + boundary + "\r\n");
+//			dos.writeBytes("Content-Disposition: form-data; name=\"file2\";filename=\"TEST_PDF.xml\"" + "\r\n");
+//			dos.writeBytes("\r\n");
+//			int bytesAvailable = fis.available();
+//			int maxBufferSize = 1024;
+//			int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//			byte[] buffer = new byte[bufferSize];
+//
+//			int bytesRead = fis.read(buffer, 0, bufferSize);
+//			while (bytesRead > 0) {
+//				// Upload file part(s)
+//				dos.write(buffer, 0, bufferSize);
+//				// System.out.println(buffer);
+//				bytesAvailable = fis.available();
+//				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//				bytesRead = fis.read(buffer, 0, bufferSize);
+//			}
+//			dos.writeBytes("\r\n");
+//			dos.writeBytes("--" + boundary + "--" + "\r\n");
+//			fis.close();
+//			dos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if(fis != null) try {
+			if (sout != null) try {
+				sout.close();
+			} catch (Exception e) {
+			}
+			if (fis != null) try {
 				fis.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		String result = null;
-		try {
-			result = mapper.writeValueAsString(byteArray);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		LOGGER.info(result);
-		
+
+//		LOGGER.info(result);
 		// return result;
-		return byteArray;
 	}
 
 	@RequestMapping("eform")
@@ -100,9 +147,8 @@ public class BoardController {
 		LOGGER.info("FILE => {}", file.getOriginalFilename());
 		LOGGER.info("FILE_PATH => {}", request.getParameter("path"));
 		LOGGER.info("FILE => {}", multi.getFileNames());
-		
-		/*File downFile = new File("d:/data/TEST_COPY.pdf");
-		FileOutputStream fos = new FileOutputStream(downFile);*/
+
+		/* File downFile = new File("d:/data/TEST_COPY.pdf"); FileOutputStream fos = new FileOutputStream(downFile); */
 		// File desFile = new File(desFolderPath + command + "_description.xml");
 		Document document = null;
 		try {
@@ -116,10 +162,8 @@ public class BoardController {
 			String nodeName = list.get(i).getName();
 			LOGGER.info(nodeName);
 		}
-		
-		/*fos.write(file.getBytes());
-		fos.flush();
-		fos.close();*/
+
+		/* fos.write(file.getBytes()); fos.flush(); fos.close(); */
 		PrintWriter pw = response.getWriter();
 		ObjectMapper objMapper = new ObjectMapper();
 		HashMap<String, Object> map = new HashMap<>();
@@ -134,7 +178,7 @@ public class BoardController {
 
 	@RequestMapping("writeView")
 	public String writeView(@RequestParam LinkedHashMap<String, String> map) {
-	// public ModelAndView writeView(@RequestParam LinkedHashMap<String, String> map) {
+		// public ModelAndView writeView(@RequestParam LinkedHashMap<String, String> map) {
 		ModelAndView model = new ModelAndView("redirect:list");
 		// RedirectView rv = new RedirectView("redi");
 		LOGGER.info("MAP => {}", map);
@@ -147,18 +191,21 @@ public class BoardController {
 	/**
 	 * @param map
 	 *            key => userId, title, contents
-	 * <pre>
+	 * 
+	 *            <pre>
 	 * 1. userId : 사용자아이디
 	 * 2. title : 글 제목
 	 * 3. contents : 글 내용
-	 * </pre>
-	 * @param file 업로드 파일
+	 *            </pre>
+	 * 
+	 * @param file
+	 *            업로드 파일
 	 * @return
 	 * @throws JsonProcessingException
 	 */
 	@RequestMapping(value = "write", method = RequestMethod.POST)
 	@ResponseBody
-	public String write( Board board  /*@RequestParam HashMap<String, Object> map, @RequestParam("file") MultipartFile file*/) throws JsonProcessingException {
+	public String write(Board board /* @RequestParam HashMap<String, Object> map, @RequestParam("file") MultipartFile file */) throws JsonProcessingException {
 		ObjectMapper objMapper = new ObjectMapper();
 		HashMap<String, Object> resultMap = boardSVC.write(board);
 		// HashMap<String, Object> resultMap = null;
@@ -188,7 +235,7 @@ public class BoardController {
 		objMapper.writeValue(new File(path), json);
 		return objMapper.writeValueAsString(json);
 	}
-	
+
 	@RequestMapping("ajax2")
 	public String ajaxTest() {
 		return null;
